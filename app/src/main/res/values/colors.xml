@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#EEE7DB</color> <!-- Blanco/Beige primario -->
+    <color name="colorPrimaryDark">#303F9F</color> <!-- Azul oscuro -->
+    <color name="colorAccent">#FF4081</color> <!-- Rosa/acento -->
+
+</resources>
