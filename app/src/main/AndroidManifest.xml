@@ -12,13 +12,19 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AMedias"
         tools:targetApi="31">
+
+        <activity
+            android:name=".MainActivity" />
+
+        <activity android:name=".LoginActivity" />
+
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

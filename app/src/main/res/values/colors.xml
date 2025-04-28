@@ -3,5 +3,6 @@
     <color name="colorPrimary">#EEE7DB</color> <!-- Blanco/Beige primario -->
     <color name="colorPrimaryDark">#303F9F</color> <!-- Azul oscuro -->
     <color name="colorAccent">#FF4081</color> <!-- Rosa/acento -->
+    <color name="blueAMedias">#1A2E4D</color>
 
 </resources>
