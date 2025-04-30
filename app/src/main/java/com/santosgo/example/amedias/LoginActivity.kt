@@ -11,7 +11,7 @@ class LoginActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.login) // Asegúrate de que tu layout se llame login.xml
+        setContentView(R.layout.login)
 
         val nicknameEditText = findViewById<EditText>(R.id.editTextNickname)
         val passwordEditText = findViewById<EditText>(R.id.editTextPassword)
@@ -22,7 +22,7 @@ class LoginActivity : AppCompatActivity() {
             val password = passwordEditText.text.toString()
 
             if (nickname.isNotEmpty() && password.isNotEmpty()) {
-                // Aquí podrías agregar validación real más adelante
+                // Modificar este bloque para la base de datos en la nube
                 val intent = Intent(this, MainActivity::class.java)
                 intent.putExtra("nickname", nickname)
                 startActivity(intent)

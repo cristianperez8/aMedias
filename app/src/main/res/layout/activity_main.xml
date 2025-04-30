@@ -8,7 +8,6 @@
     android:background="@color/colorPrimary"
     tools:context=".MainActivity">
 
-    <!-- Aquí iría el contenido principal -->
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -46,21 +45,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Barra de navegación inferior -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNavigationView"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        app:backgroundTint="@color/colorPrimary"
-        app:itemIconTint="@color/blueAMedias"
-        app:itemTextColor="@color/blueAMedias"
-        app:itemTextAppearanceActive="@style/BottomNavTextAppearance"
-        app:itemTextAppearanceInactive="@style/BottomNavTextAppearance"
-        app:menu="@menu/menu"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <Button
         android:id="@+id/buttonLogout"
         android:layout_width="wrap_content"
@@ -75,5 +59,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <Button
+        android:id="@+id/buttonContactar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Contactar con el soporte"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/blueAMedias"
+        android:textColor="@android:color/white"
+        android:fontFamily="serif"
+        app:layout_constraintTop_toBottomOf="@id/buttonLogout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/buttonChangePhoto"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Cambiar foto de perfil"
+        android:layout_marginBottom="16dp"
+        android:visibility="gone"
+        android:backgroundTint="@color/blueAMedias"
+        android:textColor="@android:color/white"
+        android:fontFamily="serif"
+        app:layout_constraintTop_toBottomOf="@id/imageViewProfile"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <!-- Barra de navegación inferior -->
+    <com.google.android.material.bottomnavigation.BottomNavigationView
+        android:id="@+id/bottomNavigationView"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:backgroundTint="@color/colorPrimary"
+        app:itemIconTint="@color/blueAMedias"
+        app:itemTextColor="@color/blueAMedias"
+        app:itemTextAppearanceActive="@style/BottomNavTextAppearance"
+        app:itemTextAppearanceInactive="@style/BottomNavTextAppearance"
+        app:menu="@menu/menu"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

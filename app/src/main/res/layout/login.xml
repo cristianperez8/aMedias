@@ -8,8 +8,6 @@
     android:background="@color/colorPrimary"
     tools:context=".LoginActivity">
 
-
-    <!-- Barra superior -->
     <TextView
         android:id="@+id/textViewAppName"
         android:layout_width="match_parent"
