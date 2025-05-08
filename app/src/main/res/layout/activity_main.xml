@@ -104,6 +104,34 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/circulo_anadir"/>
 
+    <Button
+        android:id="@+id/buttonCrearGrupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Crear grupo"
+        android:visibility="gone"
+        android:backgroundTint="@color/blueAMedias"
+        android:textColor="@android:color/white"
+        android:fontFamily="serif"
+        app:layout_constraintBottom_toTopOf="@id/buttonUnirseGrupo"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp" />
+
+    <Button
+        android:id="@+id/buttonUnirseGrupo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Unirse a grupo"
+        android:visibility="gone"
+        android:backgroundTint="@color/blueAMedias"
+        android:textColor="@android:color/white"
+        android:fontFamily="serif"
+        app:layout_constraintBottom_toTopOf="@id/buttonAdd"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="8dp" />
+
     <!-- Barra de navegación inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigationView"

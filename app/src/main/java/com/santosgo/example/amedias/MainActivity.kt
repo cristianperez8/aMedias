@@ -21,6 +21,9 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonContactar: Button
     private lateinit var buttonChangePhoto: Button
     private lateinit var buttonAdd: Button
+    private lateinit var buttonCrearGrupo: Button
+    private lateinit var buttonUnirseGrupo: Button
+
 
 
     private val PICK_IMAGE_REQUEST = 1
@@ -37,6 +40,9 @@ class MainActivity : AppCompatActivity() {
         buttonContactar = findViewById(R.id.buttonContactar)
         buttonChangePhoto = findViewById(R.id.buttonChangePhoto)
         buttonAdd = findViewById(R.id.buttonAdd)
+        buttonCrearGrupo = findViewById(R.id.buttonCrearGrupo)
+        buttonUnirseGrupo = findViewById(R.id.buttonUnirseGrupo)
+
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
@@ -77,6 +83,8 @@ class MainActivity : AppCompatActivity() {
                     imageViewProfile.visibility = View.VISIBLE
                     buttonChangePhoto.visibility = View.VISIBLE
                     buttonAdd.visibility = View.GONE
+                    buttonCrearGrupo.visibility = View.GONE
+                    buttonUnirseGrupo.visibility = View.GONE
                     true
                 }
                 else -> false
@@ -106,6 +114,13 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "No hay apps de correo instaladas", Toast.LENGTH_SHORT).show()
             }
         }
+
+        buttonAdd.setOnClickListener {
+            val visible = buttonCrearGrupo.visibility == View.VISIBLE
+            buttonCrearGrupo.visibility = if (visible) View.GONE else View.VISIBLE
+            buttonUnirseGrupo.visibility = if (visible) View.GONE else View.VISIBLE
+        }
+
     }
 
     // Cambiar foto de perfil
