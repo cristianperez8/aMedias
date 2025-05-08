@@ -24,8 +24,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonCrearGrupo: Button
     private lateinit var buttonUnirseGrupo: Button
 
-
-
     private val PICK_IMAGE_REQUEST = 1
     private var nickname: String = "Usuario"
 
@@ -119,6 +117,12 @@ class MainActivity : AppCompatActivity() {
             val visible = buttonCrearGrupo.visibility == View.VISIBLE
             buttonCrearGrupo.visibility = if (visible) View.GONE else View.VISIBLE
             buttonUnirseGrupo.visibility = if (visible) View.GONE else View.VISIBLE
+        }
+
+        buttonCrearGrupo.setOnClickListener {
+            val intent = Intent(this, CrearGrupoActivity::class.java)
+            intent.putExtra("nickname", nickname)
+            startActivity(intent)
         }
 
     }

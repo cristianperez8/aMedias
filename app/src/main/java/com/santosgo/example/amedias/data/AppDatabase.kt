@@ -20,7 +20,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "amedias_db"
-                ).allowMainThreadQueries()
+                )
+                    .fallbackToDestructiveMigration() // Esta línea es clave para evitar cierres por migración
+                    .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
                 instance

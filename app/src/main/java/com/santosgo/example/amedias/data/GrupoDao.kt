@@ -7,7 +7,7 @@ import androidx.room.Query
 @Dao
 interface GrupoDao {
     @Insert
-    fun insertar(grupo: Grupo)
+    fun insertarGrupo(grupo: Grupo)
 
     @Query("SELECT * FROM grupos")
     fun obtenerTodos(): List<Grupo>

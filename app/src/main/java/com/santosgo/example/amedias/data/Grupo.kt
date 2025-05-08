@@ -10,6 +10,7 @@ import java.util.Locale
 data class Grupo(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val nombre: String,
+    val creador: String,
     val fechaCreacion: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 )
 

@@ -17,6 +17,8 @@
 
         <activity android:name=".LoginActivity" />
 
+        <activity android:name=".CrearGrupoActivity" />
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
