@@ -20,6 +20,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonLogout: Button
     private lateinit var buttonContactar: Button
     private lateinit var buttonChangePhoto: Button
+    private lateinit var buttonAdd: Button
+
 
     private val PICK_IMAGE_REQUEST = 1
     private var nickname: String = "Usuario"
@@ -34,6 +36,7 @@ class MainActivity : AppCompatActivity() {
         buttonLogout = findViewById(R.id.buttonLogout)
         buttonContactar = findViewById(R.id.buttonContactar)
         buttonChangePhoto = findViewById(R.id.buttonChangePhoto)
+        buttonAdd = findViewById(R.id.buttonAdd)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
@@ -46,6 +49,7 @@ class MainActivity : AppCompatActivity() {
         buttonContactar.visibility = View.GONE
         imageViewProfile.visibility = View.GONE
         buttonChangePhoto.visibility = View.GONE
+        buttonAdd.visibility = View.VISIBLE
 
         // Click en botón para cambiar foto
         buttonChangePhoto.setOnClickListener {
@@ -62,6 +66,7 @@ class MainActivity : AppCompatActivity() {
                     buttonContactar.visibility = View.GONE
                     imageViewProfile.visibility = View.GONE
                     buttonChangePhoto.visibility = View.GONE
+                    buttonAdd.visibility = View.VISIBLE
                     true
                 }
 
@@ -71,6 +76,7 @@ class MainActivity : AppCompatActivity() {
                     buttonContactar.visibility = View.VISIBLE
                     imageViewProfile.visibility = View.VISIBLE
                     buttonChangePhoto.visibility = View.VISIBLE
+                    buttonAdd.visibility = View.GONE
                     true
                 }
                 else -> false

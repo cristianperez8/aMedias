@@ -87,6 +87,22 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <Button
+        android:id="@+id/buttonAdd"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:backgroundTint="@color/blueAMedias"
+        android:text="+"
+        android:textColor="@android:color/white"
+        android:textSize="24sp"
+        android:fontFamily="sans-serif"
+        android:layout_marginBottom="16dp"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigationView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/circulo_anadir"/>
 
     <!-- Barra de navegación inferior -->
     <com.google.android.material.bottomnavigation.BottomNavigationView

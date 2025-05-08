@@ -8,6 +8,37 @@
     android:background="@color/colorPrimary"
     tools:context=".LoginActivity">
 
+    <Button
+        android:id="@+id/buttonRegister"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="88dp"
+        android:layout_marginEnd="64dp"
+        android:backgroundTint="@color/blueAMedias"
+        android:fontFamily="serif"
+        android:text="Registrarse"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+
+    <Button
+        android:id="@+id/buttonLogin"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="64dp"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="64dp"
+        android:backgroundTint="@color/blueAMedias"
+        android:fontFamily="serif"
+        android:text="Iniciar sesión"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+
     <TextView
         android:id="@+id/textViewAppName"
         android:layout_width="match_parent"
@@ -73,21 +104,6 @@
         android:layout_marginEnd="32dp"
         android:fontFamily="serif"
         app:layout_constraintTop_toBottomOf="@id/editTextNickname"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
-    <Button
-        android:id="@+id/buttonLogin"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="Iniciar sesión"
-        android:layout_marginTop="24dp"
-        android:layout_marginStart="64dp"
-        android:layout_marginEnd="64dp"
-        android:backgroundTint="@color/blueAMedias"
-        android:textColor="@android:color/white"
-        android:fontFamily="serif"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

@@ -1,4 +1,9 @@
 pluginManagement {
+    plugins {
+        id("com.android.application") version "8.3.1" apply false
+        id("org.jetbrains.kotlin.android") version "1.9.22" apply false
+    }
+
     repositories {
         google {
             content {
@@ -11,6 +16,7 @@ pluginManagement {
         gradlePluginPortal()
     }
 }
+
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
     repositories {
