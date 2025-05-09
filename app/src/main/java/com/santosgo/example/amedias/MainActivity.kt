@@ -4,14 +4,11 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.santosgo.example.amedias.data.AppDatabase
 
 class MainActivity : AppCompatActivity() {
 
@@ -23,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonAdd: Button
     private lateinit var buttonCrearGrupo: Button
     private lateinit var buttonUnirseGrupo: Button
+    private lateinit var contenedorGrupos: LinearLayout
 
     private val PICK_IMAGE_REQUEST = 1
     private var nickname: String = "Usuario"
@@ -31,7 +29,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Inicializar vistas
         imageViewProfile = findViewById(R.id.imageViewProfile)
         textView = findViewById(R.id.textViewMain)
         buttonLogout = findViewById(R.id.buttonLogout)
@@ -40,14 +37,26 @@ class MainActivity : AppCompatActivity() {
         buttonAdd = findViewById(R.id.buttonAdd)
         buttonCrearGrupo = findViewById(R.id.buttonCrearGrupo)
         buttonUnirseGrupo = findViewById(R.id.buttonUnirseGrupo)
-
+        contenedorGrupos = findViewById(R.id.contenedorGrupos)
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
-        // Recibir el nombre del usuario
         nickname = intent.getStringExtra("nickname") ?: "Usuario"
 
-        // Estado inicial
+        val db = AppDatabase.getDatabase(this)
+        val usuario = db.usuarioDao().buscarPorNombre(nickname)
+
+        usuario?.fotoPerfilUri?.let { uriStr ->
+            try {
+                val uri = Uri.parse(uriStr)
+                contentResolver.openInputStream(uri)?.close()
+                imageViewProfile.setImageURI(uri)
+            } catch (e: Exception) {
+                e.printStackTrace()
+                Toast.makeText(this, "No se pudo cargar la imagen de perfil", Toast.LENGTH_SHORT).show()
+            }
+        }
+
         textView.text = "Bienvenido $nickname a la app de aMedias"
         buttonLogout.visibility = View.GONE
         buttonContactar.visibility = View.GONE
@@ -55,13 +64,34 @@ class MainActivity : AppCompatActivity() {
         buttonChangePhoto.visibility = View.GONE
         buttonAdd.visibility = View.VISIBLE
 
-        // Click en botón para cambiar foto
         buttonChangePhoto.setOnClickListener {
-            val intent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                type = "image/*"
+            }
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Navegación inferior
+        // Mostrar grupo recién creado (como botón)
+        val nombreGrupo = intent.getStringExtra("grupoCreado")
+        if (!nombreGrupo.isNullOrEmpty()) {
+            val btnGrupo = Button(this).apply {
+                text = nombreGrupo
+                textSize = 16f
+                setPadding(24, 16, 24, 16)
+                setBackgroundResource(R.drawable.fondo_grupo) // necesitas este drawable
+                setTextColor(resources.getColor(android.R.color.white))
+                setOnClickListener {
+                    val intent = Intent(this@MainActivity, GrupoAMedias::class.java)
+                    intent.putExtra("nombreGrupo", nombreGrupo)
+                    startActivity(intent)
+                }
+            }
+            contenedorGrupos.addView(btnGrupo)
+        }
+
+
+
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -71,6 +101,7 @@ class MainActivity : AppCompatActivity() {
                     imageViewProfile.visibility = View.GONE
                     buttonChangePhoto.visibility = View.GONE
                     buttonAdd.visibility = View.VISIBLE
+                    contenedorGrupos.visibility = View.VISIBLE
                     true
                 }
 
@@ -83,20 +114,19 @@ class MainActivity : AppCompatActivity() {
                     buttonAdd.visibility = View.GONE
                     buttonCrearGrupo.visibility = View.GONE
                     buttonUnirseGrupo.visibility = View.GONE
+                    contenedorGrupos.visibility = View.GONE
                     true
                 }
                 else -> false
             }
         }
 
-        // Botón cerrar sesión
         buttonLogout.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
 
-        // Botón de contacto por correo
         buttonContactar.setOnClickListener {
             val nombreApp = "aMedias"
             val emailIntent = Intent(Intent.ACTION_SEND).apply {
@@ -124,17 +154,26 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
-
     }
 
-    // Cambiar foto de perfil
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null) {
             val selectedImageUri: Uri? = data.data
             if (selectedImageUri != null) {
-                imageViewProfile.setImageURI(selectedImageUri)
+                try {
+                    contentResolver.takePersistableUriPermission(
+                        selectedImageUri,
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    )
+                    imageViewProfile.setImageURI(selectedImageUri)
+                    val db = AppDatabase.getDatabase(this)
+                    db.usuarioDao().actualizarFoto(nickname, selectedImageUri.toString())
+                } catch (e: SecurityException) {
+                    e.printStackTrace()
+                    Toast.makeText(this, "No se pudo guardar el permiso de acceso a la imagen", Toast.LENGTH_SHORT).show()
+                }
             }
         }
     }

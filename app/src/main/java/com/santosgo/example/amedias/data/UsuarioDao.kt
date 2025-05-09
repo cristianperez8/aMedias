@@ -14,4 +14,8 @@ interface UsuarioDao {
 
     @Query("SELECT * FROM usuarios WHERE nombreUsuario = :usuario AND contrasena = :clave LIMIT 1")
     fun login(usuario: String, clave: String): Usuario?
+
+    @Query("UPDATE usuarios SET fotoPerfilUri = :uri WHERE nombreUsuario = :usuario")
+    fun actualizarFoto(usuario: String, uri: String)
+
 }

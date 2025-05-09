@@ -1,5 +1,6 @@
 package com.santosgo.example.amedias
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
@@ -35,7 +36,18 @@ class CrearGrupoActivity : AppCompatActivity() {
                     withContext(Dispatchers.IO) {
                         grupoDao.insertarGrupo(grupo)
                     }
-                    Toast.makeText(this@CrearGrupoActivity, "Grupo creado correctamente", Toast.LENGTH_SHORT).show()
+
+                    Toast.makeText(
+                        this@CrearGrupoActivity,
+                        "Grupo creado correctamente",
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    // Redirigir a MainActivity con el nombre del grupo
+                    val intent = Intent(this@CrearGrupoActivity, MainActivity::class.java)
+                    intent.putExtra("nickname", usuarioCreador)
+                    intent.putExtra("grupoCreado", nombreGrupo)
+                    startActivity(intent)
                     finish()
                 }
             } else {

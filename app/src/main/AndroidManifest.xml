@@ -19,6 +19,8 @@
 
         <activity android:name=".CrearGrupoActivity" />
 
+        <activity android:name=".GrupoAMedias" />
+
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
