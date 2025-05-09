@@ -30,20 +30,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-
     <TextView
         android:id="@+id/textViewMain"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Bienvenido a aMedias!"
+        android:text="Bienvenido a aMedias"
         android:textSize="24sp"
+        android:fontFamily="serif"
         android:textColor="@color/blueAMedias"
         android:gravity="center"
-        android:fontFamily="serif"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/scrollGrupos"
+        app:layout_constraintBottom_toTopOf="@id/buttonAdd"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <Button
         android:id="@+id/buttonLogout"
@@ -133,16 +132,23 @@
         android:layout_marginBottom="8dp" />
 
     <ScrollView
-        android:layout_width="match_parent"
+        android:id="@+id/scrollGrupos"
+        android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_weight="1">
+        android:fillViewport="true"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.5">
 
         <LinearLayout
             android:id="@+id/contenedorGrupos"
-            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp" />
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:gravity="center_horizontal"
+            android:layout_gravity="top"/>
     </ScrollView>
 
     <!-- Barra de navegación inferior -->

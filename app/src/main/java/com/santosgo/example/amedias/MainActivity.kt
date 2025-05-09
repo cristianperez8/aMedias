@@ -72,25 +72,33 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Mostrar grupo recién creado (como botón)
-        val nombreGrupo = intent.getStringExtra("grupoCreado")
-        if (!nombreGrupo.isNullOrEmpty()) {
+        // Mostrar todos los grupos del usuario actual
+        val gruposUsuario = db.grupoDao().obtenerGruposPorUsuario(nickname)
+
+        for (grupo in gruposUsuario) {
             val btnGrupo = Button(this).apply {
-                text = nombreGrupo
+                text = grupo.nombre
                 textSize = 16f
                 setPadding(24, 16, 24, 16)
-                setBackgroundResource(R.drawable.fondo_grupo) // necesitas este drawable
-                setTextColor(resources.getColor(android.R.color.white))
+                setBackgroundResource(R.drawable.fondo_grupo)
+                setTextColor(resources.getColor(android.R.color.white, null))
+
+                val layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                layoutParams.setMargins(0, 0, 0, 24) // margen inferior de 24dp
+                this.layoutParams = layoutParams
+
                 setOnClickListener {
                     val intent = Intent(this@MainActivity, GrupoAMedias::class.java)
-                    intent.putExtra("nombreGrupo", nombreGrupo)
+                    intent.putExtra("nombreGrupo", grupo.nombre)
                     startActivity(intent)
                 }
             }
             contenedorGrupos.addView(btnGrupo)
+
         }
-
-
 
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {

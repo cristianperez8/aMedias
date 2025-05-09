@@ -13,14 +13,6 @@
         android:theme="@style/Theme.AMedias"
         tools:targetApi="31">
 
-        <activity android:name=".MainActivity" />
-
-        <activity android:name=".LoginActivity" />
-
-        <activity android:name=".CrearGrupoActivity" />
-
-        <activity android:name=".GrupoAMedias" />
-
         <activity
             android:name=".SplashActivity"
             android:theme="@style/SplashTheme"
@@ -30,6 +22,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".MainActivity" />
+
+        <activity android:name=".LoginActivity" />
+
+        <activity android:name=".CrearGrupoActivity" />
+
+        <activity android:name=".GrupoAMedias" />
+        
     </application>
 
 </manifest>

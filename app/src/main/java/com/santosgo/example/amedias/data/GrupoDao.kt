@@ -11,4 +11,8 @@ interface GrupoDao {
 
     @Query("SELECT * FROM grupos")
     fun obtenerTodos(): List<Grupo>
+
+    @Query("SELECT * FROM grupos WHERE creador = :nickname")
+    fun obtenerGruposPorUsuario(nickname: String): List<Grupo>
+
 }
