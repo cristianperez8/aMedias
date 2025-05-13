@@ -46,32 +46,53 @@ class GrupoAMedias : AppCompatActivity() {
     }
 
     private fun mostrarDialogoGasto() {
-        val input = EditText(this).apply {
+        val db = AppDatabase.getDatabase(this)
+        val usuariosGrupo = db.usuarioGrupoDao().obtenerUsuariosDeGrupo(grupoActual!!.id)
+
+        val inputCantidad = EditText(this).apply {
             inputType = InputType.TYPE_CLASS_NUMBER or InputType.TYPE_NUMBER_FLAG_DECIMAL
-            hint = "Introduce el gasto"
+            hint = "Introduce el gasto total"
+        }
+
+        val usuariosSeleccionados = BooleanArray(usuariosGrupo.size)
+        val nombres = usuariosGrupo.map { it.nombreUsuario }.toTypedArray()
+
+        val layout = LinearLayout(this).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(inputCantidad)
         }
 
         AlertDialog.Builder(this)
             .setTitle("Añadir gasto")
-            .setMessage("¿Cuánto se ha gastado?")
-            .setView(input)
+            .setView(layout)
+            .setMultiChoiceItems(nombres, usuariosSeleccionados) { _, which, isChecked ->
+                usuariosSeleccionados[which] = isChecked
+            }
             .setPositiveButton("Guardar") { _, _ ->
-                val texto = input.text.toString()
-                val cantidad = texto.toDoubleOrNull()
-                if (cantidad != null && cantidad > 0 && grupoActual != null) {
-                    val db = AppDatabase.getDatabase(this)
-                    val gasto = Gasto(nombreUsuario = nickname, idGrupo = grupoActual!!.id, cantidad = cantidad)
-                    db.gastoDao().insertarGasto(gasto)
-
-                    mostrarGastoEnPantalla(nickname, cantidad)
-                    Toast.makeText(this, "Gasto de %.2f€ registrado".format(cantidad), Toast.LENGTH_SHORT).show()
+                val texto = inputCantidad.text.toString()
+                val total = texto.toDoubleOrNull()
+                if (total != null && total > 0) {
+                    val seleccionados = usuariosGrupo.filterIndexed { i, _ -> usuariosSeleccionados[i] }
+                    if (seleccionados.isNotEmpty()) {
+                        val cantidadPorPersona = total / seleccionados.size
+                        for (usuario in seleccionados) {
+                            db.gastoDao().insertarGasto(
+                                Gasto(nombreUsuario = usuario.nombreUsuario, idGrupo = grupoActual!!.id, cantidad = cantidadPorPersona)
+                            )
+                            mostrarGastoEnPantalla(usuario.nombreUsuario, cantidadPorPersona)
+                        }
+                        Toast.makeText(this, "Gasto registrado y dividido entre ${seleccionados.size}", Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(this, "Selecciona al menos un usuario", Toast.LENGTH_SHORT).show()
+                    }
                 } else {
-                    Toast.makeText(this, "Introduce un número válido", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Cantidad inválida", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
+
 
     private fun mostrarGastoEnPantalla(usuario: String, cantidad: Double) {
         val recuadro = LinearLayout(this).apply {
@@ -86,21 +107,13 @@ class GrupoAMedias : AppCompatActivity() {
             layoutParams = params
         }
 
-        val textoUsuario = TextView(this).apply {
-            text = "Registrado por: $usuario"
-            textSize = 16f
-            setTextColor(resources.getColor(R.color.colorPrimary, null))
-        }
-
-        val textoCantidad = TextView(this).apply {
-            text = "Gasto: %.2f€".format(cantidad)
+        val textoGasto = TextView(this).apply {
+            text = "Gasto $usuario: %.2f€".format(cantidad)
             textSize = 18f
             setTextColor(resources.getColor(R.color.colorPrimary, null))
         }
 
-        recuadro.addView(textoUsuario)
-        recuadro.addView(textoCantidad)
-
+        recuadro.addView(textoGasto)
         contenedorGastos.addView(recuadro)
     }
 }

@@ -15,4 +15,8 @@ interface UsuarioGrupoDao {
         WHERE ug.nombreUsuario = :nickname
     """)
     fun obtenerGruposDelUsuario(nickname: String): List<Grupo>
+
+    @Query("SELECT u.* FROM usuarios u INNER JOIN usuario_grupo ug ON u.nombreUsuario = ug.nombreUsuario WHERE ug.idGrupo = :grupoId")
+
+    fun obtenerUsuariosDeGrupo(grupoId: Int): List<Usuario>
 }
