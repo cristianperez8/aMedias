@@ -93,6 +93,7 @@ class MainActivity : AppCompatActivity() {
                 setOnClickListener {
                     val intent = Intent(this@MainActivity, GrupoAMedias::class.java)
                     intent.putExtra("nombreGrupo", grupo.nombre)
+                    intent.putExtra("nickname", nickname)
                     startActivity(intent)
                 }
             }
@@ -165,7 +166,7 @@ class MainActivity : AppCompatActivity() {
 
         buttonUnirseGrupo.setOnClickListener {
             val intent = Intent(this, UnirseGrupoActivity::class.java)
-            intent.putExtra("nickname", nickname) // <- ESTA LÍNEA ES IMPORTANTE
+            intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
 

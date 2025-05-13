@@ -18,7 +18,31 @@
             android:text="Detalle del grupo"
             android:textSize="24sp"
             android:textColor="@color/blueAMedias"
-            android:layout_marginBottom="16dp" />
+            android:layout_marginBottom="16dp"
+            android:fontFamily="serif" />
 
+        <Button
+            android:id="@+id/buttonAnadirGasto"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:text="+"
+            android:textSize="24sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="@color/blueAMedias"
+            android:background="@drawable/circulo_anadir"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center" />
+
+        <!-- Contenedor donde aparecerán los gastos -->
+        <LinearLayout
+            android:id="@+id/contenedorGastos"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="32dp"
+            android:layout_marginBottom="32dp"
+            android:padding="8dp"
+            android:fontFamily="serif"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 </ScrollView>
