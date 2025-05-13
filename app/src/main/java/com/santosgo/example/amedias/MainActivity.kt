@@ -162,6 +162,11 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
+        buttonUnirseGrupo.setOnClickListener {
+            val intent = Intent(this, UnirseGrupoActivity::class.java)
+            startActivity(intent)
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
