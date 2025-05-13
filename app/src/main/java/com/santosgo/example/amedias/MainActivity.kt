@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         }
 
         // Mostrar todos los grupos del usuario actual
-        val gruposUsuario = db.grupoDao().obtenerGruposPorUsuario(nickname)
+        val gruposUsuario = db.usuarioGrupoDao().obtenerGruposDelUsuario(nickname)
 
         for (grupo in gruposUsuario) {
             val btnGrupo = Button(this).apply {
@@ -162,10 +162,13 @@ class MainActivity : AppCompatActivity() {
             intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
+
         buttonUnirseGrupo.setOnClickListener {
             val intent = Intent(this, UnirseGrupoActivity::class.java)
+            intent.putExtra("nickname", nickname) // <- ESTA LÍNEA ES IMPORTANTE
             startActivity(intent)
         }
+
 
     }
 

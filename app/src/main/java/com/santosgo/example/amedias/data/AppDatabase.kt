@@ -5,10 +5,14 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 
-@Database(entities = [Usuario::class, Grupo::class], version = 3)
+@Database(
+    entities = [Usuario::class, Grupo::class, UsuarioGrupo::class],
+    version = 4
+)
 abstract class AppDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
     abstract fun grupoDao(): GrupoDao
+    abstract fun usuarioGrupoDao(): UsuarioGrupoDao
 
     companion object {
         @Volatile
@@ -21,7 +25,7 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "amedias_db"
                 )
-                    .fallbackToDestructiveMigration() // Esta línea es clave para evitar cierres por migración
+                    .fallbackToDestructiveMigration()
                     .allowMainThreadQueries()
                     .build()
                 INSTANCE = instance
@@ -30,3 +34,4 @@ abstract class AppDatabase : RoomDatabase() {
         }
     }
 }
+

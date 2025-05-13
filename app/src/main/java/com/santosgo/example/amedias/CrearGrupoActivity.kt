@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.santosgo.example.amedias.data.AppDatabase
 import com.santosgo.example.amedias.data.Grupo
+import com.santosgo.example.amedias.data.UsuarioGrupo
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -25,6 +26,7 @@ class CrearGrupoActivity : AppCompatActivity() {
 
         val db = AppDatabase.getDatabase(this)
         val grupoDao = db.grupoDao()
+        val usuarioGrupoDao = db.usuarioGrupoDao()
 
         buttonConfirmar.setOnClickListener {
             val nombreGrupo = editTextNombreGrupo.text.toString().trim()
@@ -34,7 +36,20 @@ class CrearGrupoActivity : AppCompatActivity() {
 
                 lifecycleScope.launch {
                     withContext(Dispatchers.IO) {
+                        // Insertar grupo
                         grupoDao.insertarGrupo(grupo)
+
+                        // Obtener el grupo recién insertado
+                        val grupoCreado = grupoDao.obtenerTodos().find {
+                            it.nombre == nombreGrupo && it.creador == usuarioCreador
+                        }
+
+                        // Asociar al creador como miembro del grupo
+                        grupoCreado?.let {
+                            usuarioGrupoDao.unirseAGrupo(
+                                UsuarioGrupo(usuarioCreador, it.id)
+                            )
+                        }
                     }
 
                     Toast.makeText(
@@ -43,7 +58,6 @@ class CrearGrupoActivity : AppCompatActivity() {
                         Toast.LENGTH_SHORT
                     ).show()
 
-                    // Redirigir a MainActivity con el nombre del grupo
                     val intent = Intent(this@CrearGrupoActivity, MainActivity::class.java)
                     intent.putExtra("nickname", usuarioCreador)
                     intent.putExtra("grupoCreado", nombreGrupo)
