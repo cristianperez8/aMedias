@@ -5,12 +5,16 @@ import android.text.InputType
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.santosgo.example.amedias.data.AppDatabase
+import com.santosgo.example.amedias.data.Gasto
+import com.santosgo.example.amedias.data.Grupo
 
 class GrupoAMedias : AppCompatActivity() {
 
     private lateinit var contenedorGastos: LinearLayout
     private lateinit var nombreGrupo: String
     private lateinit var nickname: String
+    private var grupoActual: Grupo? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,6 +28,17 @@ class GrupoAMedias : AppCompatActivity() {
         contenedorGastos = findViewById(R.id.contenedorGastos)
 
         textView.text = "Estás viendo el grupo: $nombreGrupo"
+
+        val db = AppDatabase.getDatabase(this)
+        grupoActual = db.grupoDao().obtenerTodos().find { it.nombre == nombreGrupo }
+
+        grupoActual?.let { grupo ->
+            // Mostrar los gastos existentes
+            val listaGastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
+            for (g in listaGastos) {
+                mostrarGastoEnPantalla(g.nombreUsuario, g.cantidad)
+            }
+        }
 
         buttonAnadirGasto.setOnClickListener {
             mostrarDialogoGasto()
@@ -42,8 +57,12 @@ class GrupoAMedias : AppCompatActivity() {
             .setView(input)
             .setPositiveButton("Guardar") { _, _ ->
                 val texto = input.text.toString()
-                val cantidad = texto.toDouble()
-                if (cantidad != null && cantidad > 0) {
+                val cantidad = texto.toDoubleOrNull()
+                if (cantidad != null && cantidad > 0 && grupoActual != null) {
+                    val db = AppDatabase.getDatabase(this)
+                    val gasto = Gasto(nombreUsuario = nickname, idGrupo = grupoActual!!.id, cantidad = cantidad)
+                    db.gastoDao().insertarGasto(gasto)
+
                     mostrarGastoEnPantalla(nickname, cantidad)
                     Toast.makeText(this, "Gasto de %.2f€ registrado".format(cantidad), Toast.LENGTH_SHORT).show()
                 } else {
