@@ -19,4 +19,8 @@ interface UsuarioGrupoDao {
     @Query("SELECT u.* FROM usuarios u INNER JOIN usuario_grupo ug ON u.nombreUsuario = ug.nombreUsuario WHERE ug.idGrupo = :grupoId")
 
     fun obtenerUsuariosDeGrupo(grupoId: Int): List<Usuario>
+
+    @Query("DELETE FROM usuario_grupo WHERE idGrupo = :grupoId")
+    fun eliminarRelacionesDeGrupo(grupoId: Int)
+
 }

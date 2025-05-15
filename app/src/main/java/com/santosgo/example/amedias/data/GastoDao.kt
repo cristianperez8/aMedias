@@ -1,6 +1,7 @@
 package com.santosgo.example.amedias.data
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 
@@ -11,4 +12,7 @@ interface GastoDao {
 
     @Query("SELECT * FROM gastos WHERE idGrupo = :grupoId")
     fun obtenerGastosDelGrupo(grupoId: Int): List<Gasto>
+
+    @Query("DELETE FROM gastos WHERE idGrupo = :grupoId")
+    fun eliminarGastosDeGrupo(grupoId: Int)
 }

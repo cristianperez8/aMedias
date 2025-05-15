@@ -21,18 +21,37 @@
             android:layout_marginBottom="16dp"
             android:fontFamily="serif" />
 
-        <Button
-            android:id="@+id/buttonAnadirGasto"
-            android:layout_width="56dp"
-            android:layout_height="56dp"
-            android:text="+"
-            android:textSize="24sp"
-            android:textColor="@android:color/white"
-            android:backgroundTint="@color/blueAMedias"
-            android:background="@drawable/circulo_anadir"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
             android:layout_marginTop="24dp"
-            android:fontFamily="serif"
-            android:layout_gravity="center" />
+            android:layout_marginBottom="8dp">
+
+            <Button
+                android:id="@+id/buttonAnadirGasto"
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:text="+"
+                android:textSize="24sp"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/blueAMedias"
+                android:background="@drawable/circulo_anadir"
+                android:fontFamily="serif"
+                android:layout_marginEnd="16dp" />
+
+            <Button
+                android:id="@+id/buttonEliminarGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Eliminar"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:fontFamily="serif"
+                android:padding="12dp"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <Button
             android:id="@+id/buttonVerBalance"
