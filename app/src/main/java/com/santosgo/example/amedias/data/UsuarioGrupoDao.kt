@@ -23,4 +23,7 @@ interface UsuarioGrupoDao {
     @Query("DELETE FROM usuario_grupo WHERE idGrupo = :grupoId")
     fun eliminarRelacionesDeGrupo(grupoId: Int)
 
+    @Query("DELETE FROM usuario_grupo WHERE nombreUsuario = :nickname AND idGrupo = :grupoId")
+    fun eliminarUsuarioDelGrupo(nickname: String, grupoId: Int)
+
 }

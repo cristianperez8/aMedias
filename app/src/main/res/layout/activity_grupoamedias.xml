@@ -53,18 +53,36 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <Button
-            android:id="@+id/buttonVerBalance"
+        <LinearLayout
+            android:id="@+id/layoutBotonesInferiores"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Ver balance"
-            android:background="@drawable/fondo_grupo"
-            android:textColor="@android:color/white"
-            android:layout_marginTop="24dp"
+            android:orientation="horizontal"
             android:layout_gravity="center"
-            android:padding="12dp"
-            android:fontFamily="serif"
-            android:layout_marginBottom="5dp"/>
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/buttonVerBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ver balance"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:fontFamily="serif"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/buttonSalirGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salir del grupo"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:fontFamily="serif" />
+        </LinearLayout>
+
 
         <!-- Contenedor donde aparecerán los gastos -->
         <LinearLayout

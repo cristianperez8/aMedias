@@ -28,6 +28,8 @@ class GrupoAMedias : AppCompatActivity() {
         val textView = findViewById<TextView>(R.id.textViewDetalleGrupo)
         val buttonAnadirGasto = findViewById<Button>(R.id.buttonAnadirGasto)
         val buttonVerBalance = findViewById<Button>(R.id.buttonVerBalance)
+        val buttonEliminarGrupo = findViewById<Button>(R.id.buttonEliminarGrupo)
+        val buttonSalirGrupo = findViewById<Button>(R.id.buttonSalirGrupo)
         contenedorGastos = findViewById(R.id.contenedorGastos)
 
         textView.text = "Estás viendo el grupo: $nombreGrupo"
@@ -40,11 +42,52 @@ class GrupoAMedias : AppCompatActivity() {
             for (g in listaGastos) {
                 mostrarGastoEnPantalla(g.nombreUsuario, g.cantidad)
             }
-        }
 
-        val buttonEliminarGrupo = findViewById<Button>(R.id.buttonEliminarGrupo)
-        if (grupoActual?.creador == nickname) {
-            buttonEliminarGrupo.visibility = View.VISIBLE
+            // Mostrar botón eliminar solo si es creador
+            if (grupo.creador == nickname) {
+                buttonEliminarGrupo.visibility = View.VISIBLE
+                buttonSalirGrupo.visibility = View.GONE
+            } else {
+                buttonEliminarGrupo.visibility = View.GONE
+                buttonSalirGrupo.visibility = View.VISIBLE
+            }
+
+            buttonSalirGrupo.setOnClickListener {
+                val gastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
+                val totalPagado = gastos.filter { it.pagadoPor == nickname }.sumOf { it.cantidad }
+                val totalDeuda = gastos.filter { it.nombreUsuario == nickname }.sumOf { it.cantidad }
+                val balance = totalPagado - totalDeuda
+
+                if (balance == 0.0) {
+                    db.usuarioGrupoDao().eliminarUsuarioDelGrupo(nickname, grupo.id)
+                    Toast.makeText(this, "Has salido del grupo", Toast.LENGTH_SHORT).show()
+                    val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("nickname", nickname)
+                    startActivity(intent)
+                    finish()
+                } else {
+                    Toast.makeText(this, "Tu balance debe ser 0€ para salir", Toast.LENGTH_LONG).show()
+                }
+            }
+
+            buttonEliminarGrupo.setOnClickListener {
+                AlertDialog.Builder(this)
+                    .setTitle("Eliminar grupo")
+                    .setMessage("¿Estás seguro de que quieres eliminar este grupo?")
+                    .setPositiveButton("Sí") { _, _ ->
+                        db.gastoDao().eliminarGastosDeGrupo(grupo.id)
+                        db.usuarioGrupoDao().eliminarRelacionesDeGrupo(grupo.id)
+                        db.grupoDao().eliminarGrupo(grupo)
+
+                        Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show()
+                        val intent = Intent(this, MainActivity::class.java)
+                        intent.putExtra("nickname", nickname)
+                        startActivity(intent)
+                        finish()
+                    }
+                    .setNegativeButton("Cancelar", null)
+                    .show()
+            }
         }
 
         buttonAnadirGasto.setOnClickListener {
@@ -56,28 +99,6 @@ class GrupoAMedias : AppCompatActivity() {
             intent.putExtra("nombreGrupo", nombreGrupo)
             startActivity(intent)
         }
-
-        buttonEliminarGrupo.setOnClickListener {
-            AlertDialog.Builder(this)
-                .setTitle("Eliminar grupo")
-                .setMessage("¿Estás seguro de que quieres eliminar este grupo?")
-                .setPositiveButton("Sí") { _, _ ->
-                    val db = AppDatabase.getDatabase(this)
-
-                    db.gastoDao().eliminarGastosDeGrupo(grupoActual!!.id)
-                    db.usuarioGrupoDao().eliminarRelacionesDeGrupo(grupoActual!!.id)
-                    db.grupoDao().eliminarGrupo(grupoActual!!)
-
-                    Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("nickname", nickname)
-                    startActivity(intent)
-                    finish()
-                }
-                .setNegativeButton("Cancelar", null)
-                .show()
-        }
-
     }
 
     private fun mostrarDialogoGasto() {
