@@ -6,7 +6,9 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "gastos")
 data class Gasto(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val nombreUsuario: String,
     val idGrupo: Int,
+    val nombreUsuario: String,
+    val pagadoPor: String,
     val cantidad: Double
 )
+

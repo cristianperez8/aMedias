@@ -1,5 +1,6 @@
 package com.santosgo.example.amedias
 
+import android.content.Intent
 import android.os.Bundle
 import android.text.InputType
 import android.widget.*
@@ -25,6 +26,7 @@ class GrupoAMedias : AppCompatActivity() {
 
         val textView = findViewById<TextView>(R.id.textViewDetalleGrupo)
         val buttonAnadirGasto = findViewById<Button>(R.id.buttonAnadirGasto)
+        val buttonVerBalance = findViewById<Button>(R.id.buttonVerBalance)
         contenedorGastos = findViewById(R.id.contenedorGastos)
 
         textView.text = "Estás viendo el grupo: $nombreGrupo"
@@ -33,7 +35,6 @@ class GrupoAMedias : AppCompatActivity() {
         grupoActual = db.grupoDao().obtenerTodos().find { it.nombre == nombreGrupo }
 
         grupoActual?.let { grupo ->
-            // Mostrar los gastos existentes
             val listaGastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
             for (g in listaGastos) {
                 mostrarGastoEnPantalla(g.nombreUsuario, g.cantidad)
@@ -42,6 +43,12 @@ class GrupoAMedias : AppCompatActivity() {
 
         buttonAnadirGasto.setOnClickListener {
             mostrarDialogoGasto()
+        }
+
+        buttonVerBalance.setOnClickListener {
+            val intent = Intent(this, BalanceActivity::class.java)
+            intent.putExtra("nombreGrupo", nombreGrupo)
+            startActivity(intent)
         }
     }
 
@@ -54,34 +61,48 @@ class GrupoAMedias : AppCompatActivity() {
             hint = "Introduce el gasto total"
         }
 
-        val usuariosSeleccionados = BooleanArray(usuariosGrupo.size)
-        val nombres = usuariosGrupo.map { it.nombreUsuario }.toTypedArray()
+        val nombres = usuariosGrupo.map { it.nombreUsuario }
+        val usuariosSeleccionados = BooleanArray(nombres.size)
+
+        val spinnerPagadoPor = Spinner(this).apply {
+            adapter = ArrayAdapter(this@GrupoAMedias, android.R.layout.simple_spinner_dropdown_item, nombres)
+        }
 
         val layout = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
+            setPadding(32, 16, 32, 16)
+            addView(TextView(this@GrupoAMedias).apply { text = "¿Quién pagó?" })
+            addView(spinnerPagadoPor)
             addView(inputCantidad)
         }
 
         AlertDialog.Builder(this)
             .setTitle("Añadir gasto")
             .setView(layout)
-            .setMultiChoiceItems(nombres, usuariosSeleccionados) { _, which, isChecked ->
+            .setMultiChoiceItems(nombres.toTypedArray(), usuariosSeleccionados) { _, which, isChecked ->
                 usuariosSeleccionados[which] = isChecked
             }
             .setPositiveButton("Guardar") { _, _ ->
                 val texto = inputCantidad.text.toString()
                 val total = texto.toDoubleOrNull()
+                val pagadoPor = spinnerPagadoPor.selectedItem.toString()
+
                 if (total != null && total > 0) {
-                    val seleccionados = usuariosGrupo.filterIndexed { i, _ -> usuariosSeleccionados[i] }
+                    val seleccionados = nombres.filterIndexed { i, _ -> usuariosSeleccionados[i] }
                     if (seleccionados.isNotEmpty()) {
                         val cantidadPorPersona = total / seleccionados.size
                         for (usuario in seleccionados) {
                             db.gastoDao().insertarGasto(
-                                Gasto(nombreUsuario = usuario.nombreUsuario, idGrupo = grupoActual!!.id, cantidad = cantidadPorPersona)
+                                Gasto(
+                                    nombreUsuario = usuario,
+                                    idGrupo = grupoActual!!.id,
+                                    cantidad = cantidadPorPersona,
+                                    pagadoPor = pagadoPor
+                                )
                             )
-                            mostrarGastoEnPantalla(usuario.nombreUsuario, cantidadPorPersona)
+                            mostrarGastoEnPantalla(usuario, cantidadPorPersona)
                         }
-                        Toast.makeText(this, "Gasto registrado y dividido entre ${seleccionados.size}", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this, "Gasto guardado correctamente", Toast.LENGTH_SHORT).show()
                     } else {
                         Toast.makeText(this, "Selecciona al menos un usuario", Toast.LENGTH_SHORT).show()
                     }
@@ -92,7 +113,6 @@ class GrupoAMedias : AppCompatActivity() {
             .setNegativeButton("Cancelar", null)
             .show()
     }
-
 
     private fun mostrarGastoEnPantalla(usuario: String, cantidad: Double) {
         val recuadro = LinearLayout(this).apply {

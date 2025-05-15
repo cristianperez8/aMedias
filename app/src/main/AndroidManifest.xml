@@ -32,6 +32,8 @@
         <activity android:name=".GrupoAMedias" />
 
         <activity android:name=".UnirseGrupoActivity" />
+
+        <activity android:name=".BalanceActivity" />
         
     </application>
 
