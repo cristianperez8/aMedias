@@ -29,28 +29,78 @@
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp">
 
-            <Button
-                android:id="@+id/buttonAnadirGasto"
-                android:layout_width="56dp"
-                android:layout_height="56dp"
-                android:text="+"
-                android:textSize="24sp"
-                android:textColor="@android:color/white"
-                android:backgroundTint="@color/blueAMedias"
-                android:background="@drawable/circulo_anadir"
-                android:fontFamily="serif"
-                android:layout_marginEnd="16dp" />
-
-            <TextView
-                android:id="@+id/textViewLabelAnadir"
+            <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Añadir gasto"
-                android:textSize="14sp"
-                android:textColor="@color/blueAMedias"
+                android:orientation="vertical"
+                android:gravity="center_horizontal"
+                android:layout_marginEnd="16dp">
+
+                <Button
+                    android:id="@+id/buttonAnadirGasto"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:text="+"
+                    android:textSize="24sp"
+                    android:textColor="@android:color/white"
+                    android:backgroundTint="@color/blueAMedias"
+                    android:background="@drawable/circulo_anadir"
+                    android:fontFamily="serif" />
+
+                <TextView
+                    android:id="@+id/textViewLabelAnadir"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Añadir gasto"
+                    android:textSize="14sp"
+                    android:textColor="@color/blueAMedias"
+                    android:fontFamily="serif"
+                    android:layout_marginTop="4dp"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonVerBalance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ver balance"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
                 android:fontFamily="serif"
-                android:layout_marginTop="8dp"
-                android:layout_gravity="center"/>
+                android:padding="12dp"
+                android:layout_marginEnd="8dp" />
+
+            <Button
+                android:id="@+id/buttonFotos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Fotos"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:fontFamily="serif"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="12dp"
+                android:paddingBottom="12dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutBotonesInferiores"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center"
+            android:layout_marginTop="16dp">
+
+            <Button
+                android:id="@+id/buttonSalirGrupo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Salir del grupo"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:fontFamily="serif"
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/buttonEliminarGrupo"
@@ -64,38 +114,7 @@
                 android:visibility="gone" />
         </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/layoutBotonesInferiores"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center"
-            android:layout_marginTop="16dp">
-
-            <Button
-                android:id="@+id/buttonVerBalance"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Ver balance"
-                android:background="@drawable/fondo_grupo"
-                android:textColor="@android:color/white"
-                android:padding="12dp"
-                android:fontFamily="serif"
-                android:layout_marginEnd="8dp" />
-
-            <Button
-                android:id="@+id/buttonSalirGrupo"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Salir del grupo"
-                android:background="@drawable/fondo_grupo"
-                android:textColor="@android:color/white"
-                android:padding="12dp"
-                android:fontFamily="serif" />
-        </LinearLayout>
-
-
-        <!-- Contenedor donde aparecerán los gastos -->
+        <!-- Contenedor de gastos -->
         <LinearLayout
             android:id="@+id/contenedorGastos"
             android:layout_width="match_parent"
