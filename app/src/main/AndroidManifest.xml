@@ -36,7 +36,9 @@
         <activity android:name=".BalanceActivity" />
 
         <activity android:name=".ImagenesActivity" />
-        
+
+        <activity android:name=".FullscreenImageActivity" />
+
     </application>
 
 </manifest>

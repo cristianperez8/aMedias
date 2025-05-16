@@ -6,14 +6,15 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 @Database(
-    entities = [Usuario::class, Grupo::class, UsuarioGrupo::class, Gasto::class],
-    version = 8
+    entities = [Usuario::class, Grupo::class, UsuarioGrupo::class, Gasto::class, Imagen::class],
+    version = 9
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun usuarioDao(): UsuarioDao
     abstract fun grupoDao(): GrupoDao
     abstract fun usuarioGrupoDao(): UsuarioGrupoDao
     abstract fun gastoDao(): GastoDao
+    abstract fun imagenDao(): ImagenDao
 
     companion object {
         @Volatile
