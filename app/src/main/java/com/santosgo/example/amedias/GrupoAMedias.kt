@@ -99,6 +99,12 @@ class GrupoAMedias : AppCompatActivity() {
             intent.putExtra("nombreGrupo", nombreGrupo)
             startActivity(intent)
         }
+
+        val buttonFotos = findViewById<Button>(R.id.buttonFotos)
+        buttonFotos.setOnClickListener {
+            val intent = Intent(this, ImagenesActivity::class.java)
+            startActivity(intent)
+        }
     }
 
     private fun mostrarDialogoGasto() {
