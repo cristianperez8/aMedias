@@ -13,5 +13,3 @@ data class Grupo(
     val creador: String,
     val fechaCreacion: String = SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
 )
-
-

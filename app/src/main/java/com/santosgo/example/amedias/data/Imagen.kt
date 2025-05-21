@@ -7,5 +7,7 @@ import androidx.room.PrimaryKey
 data class Imagen(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val uri: String,
-    val nombreUsuario: String
+    val nombreUsuario: String,
+    val idGrupo: Int
 )
+

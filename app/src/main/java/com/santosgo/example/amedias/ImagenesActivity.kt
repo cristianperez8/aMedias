@@ -15,12 +15,15 @@ class ImagenesActivity : AppCompatActivity() {
     private val PICK_IMAGE_REQUEST = 100
     private lateinit var layoutImagenes: LinearLayout
     private lateinit var nickname: String
+    private var idGrupo: Int = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_imagenes)
 
         nickname = intent.getStringExtra("nickname") ?: "Usuario"
+        idGrupo = intent.getIntExtra("idGrupo", 0)
+
         val db = AppDatabase.getDatabase(this)
         val buttonAddImage = findViewById<Button>(R.id.buttonAddImage)
         layoutImagenes = findViewById(R.id.layoutImagenes)
@@ -33,9 +36,9 @@ class ImagenesActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Mostrar imágenes existentes
-        val imagenesGuardadas = db.imagenDao().obtenerTodas()
-        for (img in imagenesGuardadas) {
+        // Mostrar solo imágenes del grupo actual
+        val imagenesDelGrupo = db.imagenDao().obtenerPorGrupo(idGrupo)
+        for (img in imagenesDelGrupo) {
             mostrarImagen(Uri.parse(img.uri))
         }
     }
@@ -48,9 +51,10 @@ class ImagenesActivity : AppCompatActivity() {
             imageUri?.let { uri ->
                 contentResolver.takePersistableUriPermission(uri, Intent.FLAG_GRANT_READ_URI_PERMISSION)
 
-                // Guardar en BD
                 val db = AppDatabase.getDatabase(this)
-                db.imagenDao().insertarImagen(Imagen(uri = uri.toString(), nombreUsuario = nickname))
+                db.imagenDao().insertarImagen(
+                    Imagen(uri = uri.toString(), nombreUsuario = nickname, idGrupo = idGrupo)
+                )
 
                 mostrarImagen(uri)
                 Toast.makeText(this, "Imagen añadida correctamente", Toast.LENGTH_SHORT).show()
@@ -59,7 +63,7 @@ class ImagenesActivity : AppCompatActivity() {
     }
 
     private fun mostrarImagen(uri: Uri) {
-        val imageView = com.github.chrisbanes.photoview.PhotoView(this).apply {
+        val imageView = PhotoView(this).apply {
             layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 600
@@ -78,4 +82,3 @@ class ImagenesActivity : AppCompatActivity() {
         layoutImagenes.addView(imageView)
     }
 }
-

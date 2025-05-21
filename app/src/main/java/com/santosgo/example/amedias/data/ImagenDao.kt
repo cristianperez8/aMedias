@@ -6,9 +6,10 @@ import androidx.room.Query
 
 @Dao
 interface ImagenDao {
+
+    @Query("SELECT * FROM Imagen WHERE idGrupo = :grupoId")
+    fun obtenerPorGrupo(grupoId: Int): List<Imagen>
+
     @Insert
     fun insertarImagen(imagen: Imagen)
-
-    @Query("SELECT * FROM Imagen")
-    fun obtenerTodas(): List<Imagen>
 }
