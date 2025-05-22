@@ -36,7 +36,6 @@ class ImagenesActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Mostrar solo imágenes del grupo actual
         val imagenesDelGrupo = db.imagenDao().obtenerPorGrupo(idGrupo)
         for (img in imagenesDelGrupo) {
             mostrarImagen(Uri.parse(img.uri))

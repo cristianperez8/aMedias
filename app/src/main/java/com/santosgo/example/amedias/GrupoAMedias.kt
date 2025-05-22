@@ -10,6 +10,14 @@ import androidx.appcompat.app.AppCompatActivity
 import com.santosgo.example.amedias.data.AppDatabase
 import com.santosgo.example.amedias.data.Gasto
 import com.santosgo.example.amedias.data.Grupo
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.pdf.PdfDocument
+import android.os.Environment
+import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+
 
 class GrupoAMedias : AppCompatActivity() {
 
@@ -108,6 +116,12 @@ class GrupoAMedias : AppCompatActivity() {
             startActivity(intent)
         }
 
+        val buttonExportarPDF = findViewById<Button>(R.id.buttonExportarPDF)
+        buttonExportarPDF.setOnClickListener {
+            exportarGastosAPDF()
+        }
+
+
     }
 
     private fun mostrarDialogoGasto() {
@@ -193,5 +207,42 @@ class GrupoAMedias : AppCompatActivity() {
 
         recuadro.addView(textoGasto)
         contenedorGastos.addView(recuadro)
+    }
+
+    private fun exportarGastosAPDF() {
+        val db = AppDatabase.getDatabase(this)
+        val gastos = db.gastoDao().obtenerGastosDelGrupo(grupoActual?.id ?: return)
+
+        val pdfDocument = PdfDocument()
+        val paint = Paint()
+        val pageInfo = PdfDocument.PageInfo.Builder(300, 600, 1).create()
+        val page = pdfDocument.startPage(pageInfo)
+        val canvas: Canvas = page.canvas
+
+        paint.textSize = 12f
+        var y = 25f
+        canvas.drawText("Gastos del grupo: $nombreGrupo", 10f, y, paint)
+        y += 20f
+
+        for (gasto in gastos) {
+            val linea = "Gasto ${gasto.nombreUsuario}: %.2f€".format(gasto.cantidad)
+            canvas.drawText(linea, 10f, y, paint)
+            y += 20f
+            if (y > 580f) break  // evita desbordamiento
+        }
+
+        pdfDocument.finishPage(page)
+
+        val directory = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+        val file = File(directory, "Gastos_${nombreGrupo}.pdf")
+
+        try {
+            pdfDocument.writeTo(FileOutputStream(file))
+            Toast.makeText(this, "PDF guardado", Toast.LENGTH_LONG).show()
+        } catch (e: IOException) {
+            Toast.makeText(this, "Error al guardar PDF", Toast.LENGTH_LONG).show()
+        }
+
+        pdfDocument.close()
     }
 }

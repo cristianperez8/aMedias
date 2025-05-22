@@ -6,7 +6,8 @@ import androidx.room.Insert
 import androidx.room.Query
 
 @Dao
-interface GrupoDao {
+interface
+GrupoDao {
     @Insert
     fun insertarGrupo(grupo: Grupo)
 

@@ -6,7 +6,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.santosgo.example.amedias.data.AppDatabase
-import com.santosgo.example.amedias.data.Grupo
 
 class BalanceActivity : AppCompatActivity() {
 

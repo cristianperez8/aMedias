@@ -112,6 +112,18 @@
                 android:fontFamily="serif"
                 android:padding="12dp"
                 android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonExportarPDF"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Exportar PDF"
+                android:background="@drawable/fondo_grupo"
+                android:textColor="@android:color/white"
+                android:padding="12dp"
+                android:fontFamily="serif"
+                android:layout_marginStart="8dp" />
+
         </LinearLayout>
 
         <!-- Contenedor de gastos -->
