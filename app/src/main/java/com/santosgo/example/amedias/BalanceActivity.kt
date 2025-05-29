@@ -41,6 +41,7 @@ class BalanceActivity : AppCompatActivity() {
             balances[usuario] = pagado - gastado
         }
 
+        // Mostrar balances individuales
         for ((usuario, balance) in balances) {
             val mensaje = if (balance >= 0) {
                 "$usuario debe recibir: %.2f€".format(balance)
@@ -53,10 +54,46 @@ class BalanceActivity : AppCompatActivity() {
                 textSize = 18f
                 typeface = Typeface.SERIF
                 setTextColor(resources.getColor(R.color.blueAMedias, null))
-                setPadding(0, 16, 0, 0)
+                setPadding(0, 8, 0, 0)
             }
 
             contenedor.addView(textView)
         }
+
+        // Mostrar quién le debe a quién
+        val tituloDeudas = TextView(this).apply {
+            text = "Deudas entre usuarios:"
+            textSize = 22f
+            typeface = Typeface.create("serif", Typeface.BOLD)
+            setTextColor(resources.getColor(R.color.blueAMedias, null))
+            setPadding(0, 48, 0, 8)
+        }
+        contenedor.addView(tituloDeudas)
+
+        val deudores = balances.filter { it.value < 0 }.toMutableMap()
+        val acreedores = balances.filter { it.value > 0 }.toMutableMap()
+
+        for ((deudor, deudaOriginal) in deudores) {
+            var deudaRestante = -deudaOriginal
+            for ((acreedor, creditoOriginal) in acreedores.toList()) {
+                if (deudaRestante <= 0) break
+                if (creditoOriginal <= 0) continue
+
+                val cantidad = minOf(deudaRestante, creditoOriginal)
+                deudaRestante -= cantidad
+                acreedores[acreedor] = creditoOriginal - cantidad
+
+                val textView = TextView(this).apply {
+                    text = "$deudor le debe a $acreedor: %.2f€".format(cantidad)
+                    textSize = 18f
+                    typeface = Typeface.SERIF
+                    setPadding(0, 8, 0, 0)
+                    setTextColor(resources.getColor(R.color.blueAMedias, null))
+                }
+
+                contenedor.addView(textView)
+            }
+        }
+
     }
 }
