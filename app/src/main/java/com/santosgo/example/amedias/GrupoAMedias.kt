@@ -79,22 +79,46 @@ class GrupoAMedias : AppCompatActivity() {
             }
 
             buttonEliminarGrupo.setOnClickListener {
-                AlertDialog.Builder(this)
-                    .setTitle("Eliminar grupo")
-                    .setMessage("¿Estás seguro de que quieres eliminar este grupo?")
-                    .setPositiveButton("Sí") { _, _ ->
-                        db.gastoDao().eliminarGastosDeGrupo(grupo.id)
-                        db.usuarioGrupoDao().eliminarRelacionesDeGrupo(grupo.id)
-                        db.grupoDao().eliminarGrupo(grupo)
+                val usuariosGrupo = db.usuarioGrupoDao().obtenerUsuariosDeGrupo(grupo.id)
+                val gastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
 
-                        Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show()
-                        val intent = Intent(this, MainActivity::class.java)
-                        intent.putExtra("nickname", nickname)
-                        startActivity(intent)
-                        finish()
+                val balances = usuariosGrupo.map { usuario ->
+                    val totalPagado = gastos.filter { it.pagadoPor == usuario.nombreUsuario }.sumOf { it.cantidad }
+                    val totalDeuda = gastos.filter { it.nombreUsuario == usuario.nombreUsuario }.sumOf { it.cantidad }
+                    val balance = totalPagado - totalDeuda
+                    usuario.nombreUsuario to balance
+                }
+
+                val usuariosConDeuda = balances.filter { it.second != 0.0 }
+
+                if (usuariosConDeuda.isEmpty()) {
+                    AlertDialog.Builder(this)
+                        .setTitle("Eliminar grupo")
+                        .setMessage("¿Estás seguro de que quieres eliminar este grupo?")
+                        .setPositiveButton("Sí") { _, _ ->
+                            db.gastoDao().eliminarGastosDeGrupo(grupo.id)
+                            db.usuarioGrupoDao().eliminarRelacionesDeGrupo(grupo.id)
+                            db.grupoDao().eliminarGrupo(grupo)
+
+                            Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show()
+                            val intent = Intent(this, MainActivity::class.java)
+                            intent.putExtra("nickname", nickname)
+                            startActivity(intent)
+                            finish()
+                        }
+                        .setNegativeButton("Cancelar", null)
+                        .show()
+                } else {
+                    val mensaje = usuariosConDeuda.joinToString("\n") { (usuario, balance) ->
+                        "• $usuario: ${"%.2f".format(balance)}€"
                     }
-                    .setNegativeButton("Cancelar", null)
-                    .show()
+
+                    AlertDialog.Builder(this)
+                        .setTitle("No se puede eliminar el grupo")
+                        .setMessage("Los siguientes usuarios no tienen balance 0:\n\n$mensaje")
+                        .setPositiveButton("OK", null)
+                        .show()
+                }
             }
         }
 
