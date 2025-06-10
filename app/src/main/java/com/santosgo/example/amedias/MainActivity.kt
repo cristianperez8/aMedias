@@ -12,6 +12,7 @@ import com.santosgo.example.amedias.data.AppDatabase
 
 class MainActivity : AppCompatActivity() {
 
+    // Declaración de vistas de la interfaz
     private lateinit var imageViewProfile: ImageView
     private lateinit var textView: TextView
     private lateinit var buttonLogout: Button
@@ -22,6 +23,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonUnirseGrupo: Button
     private lateinit var contenedorGrupos: LinearLayout
 
+    // Constante para el código de selección de imagen
     private val PICK_IMAGE_REQUEST = 1
     private var nickname: String = "Usuario"
 
@@ -29,6 +31,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        // Inicialización de las vistas mediante su ID
         imageViewProfile = findViewById(R.id.imageViewProfile)
         textView = findViewById(R.id.textViewMain)
         buttonLogout = findViewById(R.id.buttonLogout)
@@ -41,11 +44,14 @@ class MainActivity : AppCompatActivity() {
 
         val bottomNavigationView = findViewById<BottomNavigationView>(R.id.bottomNavigationView)
 
+        // Obtener el nombre del usuario desde el intent
         nickname = intent.getStringExtra("nickname") ?: "Usuario"
 
+        // Obtener base de datos y datos del usuario actual
         val db = AppDatabase.getDatabase(this)
         val usuario = db.usuarioDao().buscarPorNombre(nickname)
 
+        // Cargar imagen de perfil si existe una URI guardada
         usuario?.fotoPerfilUri?.let { uriStr ->
             try {
                 val uri = Uri.parse(uriStr)
@@ -57,6 +63,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Texto de bienvenida y configuración inicial de visibilidad
         textView.text = "Bienvenido $nickname a la app de aMedias"
         buttonLogout.visibility = View.GONE
         buttonContactar.visibility = View.GONE
@@ -64,6 +71,7 @@ class MainActivity : AppCompatActivity() {
         buttonChangePhoto.visibility = View.GONE
         buttonAdd.visibility = View.VISIBLE
 
+        // Al pulsar "Cambiar foto", abrir selector de imagen
         buttonChangePhoto.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
                 addCategory(Intent.CATEGORY_OPENABLE)
@@ -72,7 +80,7 @@ class MainActivity : AppCompatActivity() {
             startActivityForResult(intent, PICK_IMAGE_REQUEST)
         }
 
-        // Mostrar todos los grupos del usuario actual
+        // Mostrar dinámicamente los grupos a los que pertenece el usuario
         val gruposUsuario = db.usuarioGrupoDao().obtenerGruposDelUsuario(nickname)
 
         for (grupo in gruposUsuario) {
@@ -90,6 +98,7 @@ class MainActivity : AppCompatActivity() {
                 layoutParams.setMargins(0, 0, 0, 24) // margen inferior de 24dp
                 this.layoutParams = layoutParams
 
+                // Ir a la pantalla del grupo correspondiente
                 setOnClickListener {
                     val intent = Intent(this@MainActivity, GrupoAMedias::class.java)
                     intent.putExtra("nombreGrupo", grupo.nombre)
@@ -98,9 +107,9 @@ class MainActivity : AppCompatActivity() {
                 }
             }
             contenedorGrupos.addView(btnGrupo)
-
         }
 
+        // Navegación inferior entre "Inicio" y "Perfil"
         bottomNavigationView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.nav_home -> {
@@ -130,12 +139,14 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Cerrar sesión y volver a la pantalla de login
         buttonLogout.setOnClickListener {
             val intent = Intent(this, LoginActivity::class.java)
             intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             startActivity(intent)
         }
 
+        // Botón para contactar con el desarrollador por correo electrónico
         buttonContactar.setOnClickListener {
             val nombreApp = "aMedias"
             val emailIntent = Intent(Intent.ACTION_SEND).apply {
@@ -152,27 +163,29 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Mostrar u ocultar botones de "Crear grupo" y "Unirse a grupo"
         buttonAdd.setOnClickListener {
             val visible = buttonCrearGrupo.visibility == View.VISIBLE
             buttonCrearGrupo.visibility = if (visible) View.GONE else View.VISIBLE
             buttonUnirseGrupo.visibility = if (visible) View.GONE else View.VISIBLE
         }
 
+        // Lanzar actividad para crear un grupo
         buttonCrearGrupo.setOnClickListener {
             val intent = Intent(this, CrearGrupoActivity::class.java)
             intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
 
+        // Lanzar actividad para unirse a un grupo
         buttonUnirseGrupo.setOnClickListener {
             val intent = Intent(this, UnirseGrupoActivity::class.java)
             intent.putExtra("nickname", nickname)
             startActivity(intent)
         }
-
-
     }
 
+    // Guardar y mostrar la imagen de perfil seleccionada por el usuario
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
@@ -180,11 +193,14 @@ class MainActivity : AppCompatActivity() {
             val selectedImageUri: Uri? = data.data
             if (selectedImageUri != null) {
                 try {
+                    // Conservar permiso de lectura persistente sobre la imagen
                     contentResolver.takePersistableUriPermission(
                         selectedImageUri,
                         Intent.FLAG_GRANT_READ_URI_PERMISSION
                     )
                     imageViewProfile.setImageURI(selectedImageUri)
+
+                    // Guardar URI en base de datos para recuperarla después
                     val db = AppDatabase.getDatabase(this)
                     db.usuarioDao().actualizarFoto(nickname, selectedImageUri.toString())
                 } catch (e: SecurityException) {

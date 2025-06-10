@@ -8,7 +8,10 @@ class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        // Inicia la actividad de login al abrir la app
         startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
+
+        // Finaliza la splash activity para que no quede en el historial
         finish()
     }
 }

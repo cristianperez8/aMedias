@@ -30,9 +30,11 @@ class GrupoAMedias : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_grupoamedias)
 
+        // Obtener datos de la intención
         nombreGrupo = intent.getStringExtra("nombreGrupo") ?: "Grupo"
         nickname = intent.getStringExtra("nickname") ?: "Usuario"
 
+        // Referencias a vistas del layout
         val textView = findViewById<TextView>(R.id.textViewDetalleGrupo)
         val buttonAnadirGasto = findViewById<Button>(R.id.buttonAnadirGasto)
         val buttonVerBalance = findViewById<Button>(R.id.buttonVerBalance)
@@ -40,6 +42,7 @@ class GrupoAMedias : AppCompatActivity() {
         val buttonSalirGrupo = findViewById<Button>(R.id.buttonSalirGrupo)
         contenedorGastos = findViewById(R.id.contenedorGastos)
 
+        // Mostrar nombre del grupo
         textView.text = "Estás viendo el grupo: $nombreGrupo"
 
         val db = AppDatabase.getDatabase(this)
@@ -51,7 +54,7 @@ class GrupoAMedias : AppCompatActivity() {
                 mostrarGastoEnPantalla(g.nombreUsuario, g.cantidad)
             }
 
-            // Mostrar botón eliminar solo si es creador
+            // Mostrar botones según si el usuario es el creador o no
             if (grupo.creador == nickname) {
                 buttonEliminarGrupo.visibility = View.VISIBLE
                 buttonSalirGrupo.visibility = View.GONE
@@ -60,6 +63,7 @@ class GrupoAMedias : AppCompatActivity() {
                 buttonSalirGrupo.visibility = View.VISIBLE
             }
 
+            // Salir del grupo solo si el balance del usuario es 0€
             buttonSalirGrupo.setOnClickListener {
                 val gastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
                 val totalPagado = gastos.filter { it.pagadoPor == nickname }.sumOf { it.cantidad }
@@ -69,15 +73,14 @@ class GrupoAMedias : AppCompatActivity() {
                 if (balance == 0.0) {
                     db.usuarioGrupoDao().eliminarUsuarioDelGrupo(nickname, grupo.id)
                     Toast.makeText(this, "Has salido del grupo", Toast.LENGTH_SHORT).show()
-                    val intent = Intent(this, MainActivity::class.java)
-                    intent.putExtra("nickname", nickname)
-                    startActivity(intent)
+                    startActivity(Intent(this, MainActivity::class.java).putExtra("nickname", nickname))
                     finish()
                 } else {
                     Toast.makeText(this, "Tu balance debe ser 0€ para salir", Toast.LENGTH_LONG).show()
                 }
             }
 
+            // Eliminar el grupo si todos los usuarios tienen balance 0
             buttonEliminarGrupo.setOnClickListener {
                 val usuariosGrupo = db.usuarioGrupoDao().obtenerUsuariosDeGrupo(grupo.id)
                 val gastos = db.gastoDao().obtenerGastosDelGrupo(grupo.id)
@@ -85,8 +88,7 @@ class GrupoAMedias : AppCompatActivity() {
                 val balances = usuariosGrupo.map { usuario ->
                     val totalPagado = gastos.filter { it.pagadoPor == usuario.nombreUsuario }.sumOf { it.cantidad }
                     val totalDeuda = gastos.filter { it.nombreUsuario == usuario.nombreUsuario }.sumOf { it.cantidad }
-                    val balance = totalPagado - totalDeuda
-                    usuario.nombreUsuario to balance
+                    usuario.nombreUsuario to (totalPagado - totalDeuda)
                 }
 
                 val usuariosConDeuda = balances.filter { it.second != 0.0 }
@@ -99,11 +101,8 @@ class GrupoAMedias : AppCompatActivity() {
                             db.gastoDao().eliminarGastosDeGrupo(grupo.id)
                             db.usuarioGrupoDao().eliminarRelacionesDeGrupo(grupo.id)
                             db.grupoDao().eliminarGrupo(grupo)
-
                             Toast.makeText(this, "Grupo eliminado", Toast.LENGTH_SHORT).show()
-                            val intent = Intent(this, MainActivity::class.java)
-                            intent.putExtra("nickname", nickname)
-                            startActivity(intent)
+                            startActivity(Intent(this, MainActivity::class.java).putExtra("nickname", nickname))
                             finish()
                         }
                         .setNegativeButton("Cancelar", null)
@@ -122,32 +121,29 @@ class GrupoAMedias : AppCompatActivity() {
             }
         }
 
-        buttonAnadirGasto.setOnClickListener {
-            mostrarDialogoGasto()
-        }
+        // Añadir gasto
+        buttonAnadirGasto.setOnClickListener { mostrarDialogoGasto() }
 
+        // Ver balance del grupo
         buttonVerBalance.setOnClickListener {
-            val intent = Intent(this, BalanceActivity::class.java)
-            intent.putExtra("nombreGrupo", nombreGrupo)
-            startActivity(intent)
+            startActivity(Intent(this, BalanceActivity::class.java).putExtra("nombreGrupo", nombreGrupo))
         }
 
-        val buttonFotos = findViewById<Button>(R.id.buttonFotos)
-        buttonFotos.setOnClickListener {
-            val intent = Intent(this, ImagenesActivity::class.java)
-            intent.putExtra("nickname", nickname)
-            intent.putExtra("idGrupo", grupoActual?.id ?: 0)
-            startActivity(intent)
+        // Ver fotos del grupo
+        findViewById<Button>(R.id.buttonFotos).setOnClickListener {
+            startActivity(Intent(this, ImagenesActivity::class.java).apply {
+                putExtra("nickname", nickname)
+                putExtra("idGrupo", grupoActual?.id ?: 0)
+            })
         }
 
-        val buttonExportarPDF = findViewById<Button>(R.id.buttonExportarPDF)
-        buttonExportarPDF.setOnClickListener {
+        // Exportar los gastos del grupo a PDF
+        findViewById<Button>(R.id.buttonExportarPDF).setOnClickListener {
             exportarGastosAPDF()
         }
-
-
     }
 
+    // Muestra un diálogo para introducir un nuevo gasto y repartirlo entre usuarios
     private fun mostrarDialogoGasto() {
         val db = AppDatabase.getDatabase(this)
         val usuariosGrupo = db.usuarioGrupoDao().obtenerUsuariosDeGrupo(grupoActual!!.id)
@@ -179,48 +175,42 @@ class GrupoAMedias : AppCompatActivity() {
                 usuariosSeleccionados[which] = isChecked
             }
             .setPositiveButton("Guardar") { _, _ ->
-                val texto = inputCantidad.text.toString()
-                val total = texto.toDoubleOrNull()
+                val total = inputCantidad.text.toString().toDoubleOrNull()
                 val pagadoPor = spinnerPagadoPor.selectedItem.toString()
+                val seleccionados = nombres.filterIndexed { i, _ -> usuariosSeleccionados[i] }
 
-                if (total != null && total > 0) {
-                    val seleccionados = nombres.filterIndexed { i, _ -> usuariosSeleccionados[i] }
-                    if (seleccionados.isNotEmpty()) {
-                        val cantidadPorPersona = total / seleccionados.size
-                        for (usuario in seleccionados) {
-                            db.gastoDao().insertarGasto(
-                                Gasto(
-                                    nombreUsuario = usuario,
-                                    idGrupo = grupoActual!!.id,
-                                    cantidad = cantidadPorPersona,
-                                    pagadoPor = pagadoPor
-                                )
+                if (total != null && total > 0 && seleccionados.isNotEmpty()) {
+                    val cantidadPorPersona = total / seleccionados.size
+                    for (usuario in seleccionados) {
+                        db.gastoDao().insertarGasto(
+                            Gasto(
+                                nombreUsuario = usuario,
+                                idGrupo = grupoActual!!.id,
+                                cantidad = cantidadPorPersona,
+                                pagadoPor = pagadoPor
                             )
-                            mostrarGastoEnPantalla(usuario, cantidadPorPersona)
-                        }
-                        Toast.makeText(this, "Gasto guardado correctamente", Toast.LENGTH_SHORT).show()
-                    } else {
-                        Toast.makeText(this, "Selecciona al menos un usuario", Toast.LENGTH_SHORT).show()
+                        )
+                        mostrarGastoEnPantalla(usuario, cantidadPorPersona)
                     }
+                    Toast.makeText(this, "Gasto guardado correctamente", Toast.LENGTH_SHORT).show()
                 } else {
-                    Toast.makeText(this, "Cantidad inválida", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Datos inválidos", Toast.LENGTH_SHORT).show()
                 }
             }
             .setNegativeButton("Cancelar", null)
             .show()
     }
 
+    // Muestra visualmente un gasto en pantalla dentro de un recuadro
     private fun mostrarGastoEnPantalla(usuario: String, cantidad: Double) {
         val recuadro = LinearLayout(this).apply {
             orientation = LinearLayout.VERTICAL
             setBackgroundResource(R.drawable.fondo_grupo)
             setPadding(32, 24, 32, 24)
-            val params = LinearLayout.LayoutParams(
+            layoutParams = LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-            params.setMargins(0, 0, 0, 24)
-            layoutParams = params
+            ).apply { setMargins(0, 0, 0, 24) }
         }
 
         val textoGasto = TextView(this).apply {
@@ -233,6 +223,7 @@ class GrupoAMedias : AppCompatActivity() {
         contenedorGastos.addView(recuadro)
     }
 
+    // Exporta los gastos del grupo a un documento PDF y lo guarda en la carpeta Descargas
     private fun exportarGastosAPDF() {
         val db = AppDatabase.getDatabase(this)
         val gastos = db.gastoDao().obtenerGastosDelGrupo(grupoActual?.id ?: return)
@@ -252,7 +243,7 @@ class GrupoAMedias : AppCompatActivity() {
             val linea = "Gasto ${gasto.nombreUsuario}: %.2f€".format(gasto.cantidad)
             canvas.drawText(linea, 10f, y, paint)
             y += 20f
-            if (y > 580f) break  // evita desbordamiento
+            if (y > 580f) break // evitar que el contenido se desborde de la página
         }
 
         pdfDocument.finishPage(page)
