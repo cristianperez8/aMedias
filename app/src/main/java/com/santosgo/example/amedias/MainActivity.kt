@@ -163,7 +163,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
-        // Mostrar u ocultar botones de "Crear grupo" y "Unirse a grupo"
+        // Mostrar ocultar botones de "Crear grupo" y "Unirse a grupo"
         buttonAdd.setOnClickListener {
             val visible = buttonCrearGrupo.visibility == View.VISIBLE
             buttonCrearGrupo.visibility = if (visible) View.GONE else View.VISIBLE

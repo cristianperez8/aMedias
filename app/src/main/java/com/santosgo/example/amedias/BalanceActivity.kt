@@ -16,7 +16,7 @@ class BalanceActivity : AppCompatActivity() {
         // Referencia al contenedor en el layout donde se mostrarán los balances
         val contenedor = findViewById<LinearLayout>(R.id.contenedorBalance)
 
-        // Obtener el nombre del grupo pasado por la intención (intent)
+        // Obtener el nombre del grupo pasado por la intención
         val nombreGrupo = intent.getStringExtra("nombreGrupo") ?: return
 
         // Obtener instancia de la base de datos
